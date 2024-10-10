@@ -28,10 +28,9 @@ func main() {
 	go clientReq()
 	go middleProxy()
 
-	proxy := &Upstream{target: nil, proxy: &httputil.ReverseProxy{}}
 	svc := &http.Server{
 		Addr:    ":9001",
-		Handler: proxy,
+		Handler: getHandler(),
 	}
 	ca, err := private_key.NewCA("expvent.com")
 	if err != nil {
@@ -57,24 +56,24 @@ type Upstream struct {
 	proxy  *httputil.ReverseProxy
 }
 
-func (p *Upstream) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("X-Forwarded-For", r.Host)
-	p.proxy.Director = func(req *http.Request) {
-		log.Printf("req: %#v\n", req.Header)
+func getHandler() http.Handler {
+	proxy := &httputil.ReverseProxy{}
+	proxy.Director = func(req *http.Request) {
+		// 必需是 https
 		req.URL.Scheme = "https"
+		// 跳转到二级反向代理
 		req.URL.Host = "127.0.0.1:9002"
+		// 去除前缀
 		req.URL.Path = strings.TrimPrefix(req.URL.Path, "/r/apps/test-grpc")
 		req.RequestURI = strings.TrimPrefix(req.RequestURI, "/r/apps/test-grpc")
 		req.Host = "127.0.0.1:9002"
-		log.Printf("req2: %#v\n", req)
-		log.Printf("req2: %#v\n", req.URL)
 	}
-	p.proxy.Transport =
+	proxy.Transport =
 		&http2.Transport{
 			AllowHTTP:       true,
 			TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
 		}
-	p.proxy.ServeHTTP(w, r)
+	return proxy
 }
 
 func middleProxy() {
