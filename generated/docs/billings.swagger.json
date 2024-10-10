@@ -1,0 +1,37 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "everai/billings/v1/service.proto",
+    "version": "version not set"
+  },
+  "tags": [
+    {
+      "name": "BillingService"
+    }
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {},
+  "definitions": {
+    "v1GetAppBillingResponse": {
+      "type": "object",
+      "properties": {
+        "resp": {
+          "type": "string"
+        }
+      }
+    },
+    "v1ListAppBillingsResponse": {
+      "type": "object",
+      "properties": {
+        "listBillings": {
+          "type": "string"
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,31 @@
+version: v1
+plugins:
+  - plugin: buf.build/protocolbuffers/go:v1.33.0
+    out: generated/golang
+    opt:
+      - paths=source_relative
+
+  - plugin: buf.build/grpc/go
+    out: generated/golang
+    opt:
+      - paths=source_relative
+
+  - plugin: buf.build/grpc-ecosystem/gateway
+    out: generated/golang
+    opt:
+      - paths=source_relative
+      - allow_delete_body=true
+
+  - plugin: buf.build/bufbuild/validate-go
+    out: generated/golang
+    opt:
+      - paths=source_relative
+
+  - plugin: buf.build/grpc-ecosystem/openapiv2
+    out: generated/docs
+    opt:
+      - use_go_templates=true
+      - disable_default_errors=true
+      - allow_merge=true
+      - merge_file_name=billings
+      - allow_delete_body=true

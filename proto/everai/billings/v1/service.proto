@@ -1,0 +1,24 @@
+syntax = "proto3";
+package billings.v1;
+
+option go_package = "github.com/wanmei002/testgrpc-proxy/generated/golang/everai/billings/v1;billings";
+
+
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/empty.proto";
+
+message GetAppBillingResponse {
+  string resp = 1;
+}
+
+message ListAppBillingsResponse {
+  string list_billings = 1;
+}
+
+service BillingService {
+  rpc ListAppBillings(google.protobuf.Empty) returns (ListAppBillingsResponse);
+
+  rpc GetAppBilling(google.protobuf.Empty) returns (GetAppBillingResponse);
+}
+
